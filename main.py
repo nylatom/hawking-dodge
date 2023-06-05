@@ -13,14 +13,14 @@ PLAYER_WIDTH = 10
 PLAYER_HEIGHT = 20
 
 PLAYER_VEL = 10
-STAR_WIDTH = 10
-STAR_HEIGHT = 20
-STAR_VEL = 5
+PARTICLE_WIDTH = 10
+PARTICLE_HEIGHT = 20
+PARTICLE_VEL = 5
 
 FONT = pygame.font.SysFont("calibri", 30)
 
 
-def draw(player, elapsed_time, stars):
+def draw(player, elapsed_time, particles):
     WIN.blit(BG, (0, 0))
 
     time_text = FONT.render(f"Time: {round(elapsed_time)}s", 1, "white")
@@ -28,8 +28,8 @@ def draw(player, elapsed_time, stars):
 
     pygame.draw.rect(WIN, "yellow", player)
 
-    for star in stars:
-        pygame.draw.rect(WIN, "orange", star)
+    for particle in particles:
+        pygame.draw.rect(WIN, "orange", particle)
 
     pygame.display.update()
 
@@ -43,25 +43,25 @@ def main():
     start_time = time.time()
     elapsed_time = 0
 
-    star_add_increment = 2000
-    star_count = 0
+    particle_add_increment = 2000
+    particle_count = 0
 
-    stars = []
+    particles = []
     hit = False
 
     while run:
-        star_count += clock.tick(60)
+        particle_count += clock.tick(60)
         elapsed_time = time.time() - start_time
 
-        if star_count > star_add_increment:
+        if particle_count > particle_add_increment:
             for _ in range(5):
-                star_x = random.randint(0, WIDTH - STAR_WIDTH)
-                star = pygame.Rect(star_x, -STAR_HEIGHT,
-                                   STAR_WIDTH, STAR_HEIGHT)
-                stars.append(star)
+                particle_x = random.randint(0, WIDTH - PARTICLE_WIDTH)
+                particle = pygame.Rect(particle_x, -PARTICLE_HEIGHT,
+                                   PARTICLE_WIDTH, PARTICLE_HEIGHT)
+                particles.append(particle)
 
-            star_add_increment = max(50, star_add_increment - 50)
-            star_count = 0
+            particle_add_increment = max(50, particle_add_increment - 50)
+            particle_count = 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -73,14 +73,14 @@ def main():
             player.x -= PLAYER_VEL
         if keys[pygame.K_RIGHT] and player.x + PLAYER_VEL + player.width <= WIDTH:
             player.x += PLAYER_VEL
-        if keys[pygame.K_SEMICOLON]: star_count += clock.tick(10)
+        if keys[pygame.K_SEMICOLON]: particle_count += clock.tick(10)
 
-        for star in stars[:]:
-            star.y += STAR_VEL
-            if star.y > HEIGHT:
-                stars.remove(star)
-            elif star.y + star.height >= player.y and star.colliderect(player):
-                stars.remove(star)
+        for particle in particles[:]:
+            particle.y += PARTICLE_VEL
+            if particle.y > HEIGHT:
+                particles.remove(particle)
+            elif particle.y + particle.height >= player.y and particle.colliderect(player):
+                particles.remove(particle)
                 hit = True
                 break
 
@@ -91,7 +91,7 @@ def main():
             pygame.time.delay(4000)
             break
 
-        draw(player, elapsed_time, stars)
+        draw(player, elapsed_time, particles)
 
     pygame.quit()
 
